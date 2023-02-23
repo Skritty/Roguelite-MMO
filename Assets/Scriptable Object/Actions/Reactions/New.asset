@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0a4db7c4ff6e244eb2394502c9ba39e, type: 3}
+  m_Name: New
+  m_EditorClassIdentifier: 
+  OnUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  Memory:
+    rid: 3253214766683652191
+  references:
+    version: 2
+    RefIds:
+    - rid: 3253214766683652191
+      type: {class: MoveState, ns: , asm: Assembly-CSharp}
+      data:
+        parentMemories: []
+        animationName: 
+        animationTransitionTime: 0
+        tickDuration: 0
+        looping: 0
+        simultaniousStateFunctionality: []
+        target:
+          parentMemories: []
+        movementSpeed: 0

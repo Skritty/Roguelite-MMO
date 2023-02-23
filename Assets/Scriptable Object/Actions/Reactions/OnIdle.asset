@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0a4db7c4ff6e244eb2394502c9ba39e, type: 3}
+  m_Name: OnIdle
+  m_EditorClassIdentifier: 
+  OnUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  Memory:
+    rid: 3253214766683652164
+  references:
+    version: 2
+    RefIds:
+    - rid: 3253214766683652164
+      type: {class: DoActions, ns: , asm: Assembly-CSharp}
+      data:
+        _default: {fileID: 0}
+        parentMemories: []
+        trigger:
+          rid: 3253214766683652174
+        actions:
+        - rid: 3253214766683652176
+    - rid: 3253214766683652174
+      type: {class: Hit, ns: , asm: Assembly-CSharp}
+      data:
+        _default: {fileID: 0}
+        parentMemories: []
+        damage: 0
+    - rid: 3253214766683652176
+      type: {class: Attack, ns: , asm: Assembly-CSharp}
+      data:
+        _default: {fileID: 0}
+        parentMemories: []
+        hit:
+          _default: {fileID: 0}
+          parentMemories: []
+          damage: 0
+        attackRange: 0
+        clearTarget: 1
