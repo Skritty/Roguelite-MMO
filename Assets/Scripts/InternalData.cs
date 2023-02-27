@@ -1,10 +1,11 @@
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 [System.Serializable]
 public abstract class InternalData : Memory, IHostActor
 {
-    [System.NonSerialized, Sirenix.Serialization.OdinSerialize, HideInInspector]
     private Actor _host;
+    [ShowInInspector, ReadOnly, PropertyOrder(-99), FoldoutGroup("Core")]
     public virtual Actor Host
     {
         get
@@ -17,15 +18,9 @@ public abstract class InternalData : Memory, IHostActor
         }
     }
 
-    /// <summary>
-    /// Initializes the instance after setting the host.
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="host"></param>
-    /// <returns></returns>
-    public virtual T Instance<T>(Actor host) where T : InternalData
+    public T Clone<T>(Actor host) where T : InternalEvent
     {
-        T copy = default(T);
+        T copy = Clone<T>(false);
         copy.Host = host;
         copy.Initialize();
         return copy;

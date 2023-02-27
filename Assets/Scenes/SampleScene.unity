@@ -163,7 +163,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 630495614}
-  - component: {fileID: 630495613}
   - component: {fileID: 630495615}
   m_Layer: 0
   m_Name: AI 1
@@ -172,32 +171,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &630495613
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 630495611}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0dc859bdf8c5fa345a1eee0405d8656d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  internalProperties:
-  - rid: 3253214766683652143
-  - rid: 6422047833113493509
-  ingrainedMemories: []
-  eventMemory: []
-  references:
-    version: 2
-    RefIds:
-    - rid: 3253214766683652143
-      type: {class: StatData, ns: , asm: Assembly-CSharp}
-      data:
-        hp: 10
-    - rid: 6422047833113493509
-      type: {class: StateMachine, ns: , asm: Assembly-CSharp}
 --- !u!4 &630495614
 Transform:
   m_ObjectHideFlags: 0
@@ -224,22 +197,120 @@ MonoBehaviour:
   m_GameObject: {fileID: 630495611}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b6869b5b8c17554bb7031cf24914da5, type: 3}
+  m_Script: {fileID: 11500000, guid: 0dc859bdf8c5fa345a1eee0405d8656d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  memory:
-    rid: 6422047833113493508
+  internalProperties:
+  - rid: 6422047915378475082
+  - rid: 6422047915378475083
+  ingrainedMemories:
+  - rid: 6422047915378475093
+  eventMemory: []
   references:
     version: 2
     RefIds:
-    - rid: 6422047833113493508
-      type: {class: MoveState, ns: , asm: Assembly-CSharp}
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 6422047915378475082
+      type: {class: StatData, ns: , asm: Assembly-CSharp}
       data:
-        animationName: Move
+        parentMemories: []
+        hp: 20
+    - rid: 6422047915378475083
+      type: {class: StateMachine, ns: , asm: Assembly-CSharp}
+      data:
+        parentMemories: []
+        possibleStates:
+        - rid: 6422047915378475156
+        - rid: 6422047915378475186
+        currentState:
+          rid: -2
+    - rid: 6422047915378475093
+      type: {class: DoActions, ns: , asm: Assembly-CSharp}
+      data:
+        parentMemories: []
+        trigger:
+          rid: 6422047915378475105
+        actions:
+        - rid: 6422047915378475167
+        - rid: 6422047915378475095
+    - rid: 6422047915378475095
+      type: {class: Attack, ns: , asm: Assembly-CSharp}
+      data:
+        parentMemories: []
+        hit:
+          rid: 6422047915378475172
+        attackRange: 1
+        clearTarget: 1
+    - rid: 6422047915378475105
+      type: {class: IdleState, ns: , asm: Assembly-CSharp}
+      data:
+        parentMemories: []
+        animationName: 
         animationTransitionTime: 0
         tickDuration: 0
         looping: 0
-        movementSpeed: 5
+        exitState:
+          rid: -2
+        simultaniousStateFunctionality: []
+    - rid: 6422047915378475156
+      type: {class: IdleState, ns: , asm: Assembly-CSharp}
+      data:
+        parentMemories: []
+        animationName: Idle
+        animationTransitionTime: 0
+        tickDuration: 60
+        looping: 0
+        exitState:
+          rid: 6422047915378475157
+        simultaniousStateFunctionality: []
+    - rid: 6422047915378475157
+      type: {class: MoveState, ns: , asm: Assembly-CSharp}
+      data:
+        parentMemories: []
+        animationName: Move
+        animationTransitionTime: 0
+        tickDuration: 60
+        looping: 0
+        exitState:
+          rid: 6422047915378475156
+        simultaniousStateFunctionality: []
+        movementSpeed: 1
+    - rid: 6422047915378475167
+      type: {class: FindTarget, ns: , asm: Assembly-CSharp}
+      data:
+        parentMemories: []
+        target:
+          parentMemories: []
+        targetSelf: 0
+    - rid: 6422047915378475172
+      type: {class: Hit, ns: , asm: Assembly-CSharp}
+      data:
+        parentMemories: []
+        damage: 1
+    - rid: 6422047915378475186
+      type: {class: MoveState, ns: , asm: Assembly-CSharp}
+      data:
+        parentMemories: []
+        animationName: Move
+        animationTransitionTime: 0
+        tickDuration: 60
+        looping: 0
+        exitState:
+          rid: 6422047915378475187
+        simultaniousStateFunctionality: []
+        movementSpeed: 10
+    - rid: 6422047915378475187
+      type: {class: IdleState, ns: , asm: Assembly-CSharp}
+      data:
+        parentMemories: []
+        animationName: Idle
+        animationTransitionTime: 0
+        tickDuration: 60
+        looping: 0
+        exitState:
+          rid: 6422047915378475186
+        simultaniousStateFunctionality: []
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -448,16 +519,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   internalProperties:
-  - rid: 6422047830401351680
-  ingrainedMemories: []
+  - rid: 6422047915378475085
+  - rid: 6422047915378475087
+  ingrainedMemories:
+  - rid: 6422047915378475091
   eventMemory: []
   references:
     version: 2
     RefIds:
-    - rid: 6422047830401351680
+    - rid: 6422047915378475085
       type: {class: StatData, ns: , asm: Assembly-CSharp}
       data:
+        parentMemories: []
         hp: 10
+    - rid: 6422047915378475087
+      type: {class: VisualData, ns: , asm: Assembly-CSharp}
+      data:
+        parentMemories: []
+        renderer: {fileID: 1034885416}
+    - rid: 6422047915378475091
+      type: {class: HealthAdjustment, ns: , asm: Assembly-CSharp}
+      data:
+        parentMemories: []
+        trigger:
+          rid: 6422047915378475092
+        hurtColor: {r: 1, g: 0, b: 0, a: 0}
+    - rid: 6422047915378475092
+      type: {class: Hit, ns: , asm: Assembly-CSharp}
+      data:
+        parentMemories: []
+        damage: 0
 --- !u!4 &1022670078
 Transform:
   m_ObjectHideFlags: 0

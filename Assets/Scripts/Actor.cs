@@ -9,68 +9,58 @@ using Sirenix.OdinInspector.Editor;
 public class Actor : MonoBehaviour
 {
     private Queue<Event> eventQueue = new Queue<Event>();
-    [SerializeReference, HideReferenceObjectPicker, ValueDropdown("@Memory.GetAssignableInstanceEnumerable<InternalData>()"), ListDrawerSettings(HideRemoveButton = true)]
+    [SerializeReference, AcceptDefaultMemorySO, HideReferenceObjectPicker, ValueDropdown("@Memory.GetAssignableInstanceEnumerable<InternalData>()"), ListDrawerSettings(HideRemoveButton = true)]
     private List<InternalData> internalProperties = new List<InternalData>();
-    [SerializeField, HideInInspector]
-    private List<InternalData> existingProperties = new List<InternalData>();
-    [SerializeReference, HideReferenceObjectPicker, ValueDropdown("@Memory.GetAssignableInstanceEnumerable<Memory>()"), ListDrawerSettings(HideRemoveButton = true)]
+    [SerializeReference, AcceptDefaultMemorySO, HideReferenceObjectPicker, ValueDropdown("@Memory.GetAssignableInstanceEnumerable<Memory>()"), ListDrawerSettings(HideRemoveButton = true)]
     private List<Memory> ingrainedMemories = new List<Memory>();
     public System.Action OnFixedUpdate;
-
-    private void Start()
-    {
-        InitializeProperties();
-        InitializeMemories();
-    }
 
     private void FixedUpdate()
     {
         OnFixedUpdate?.Invoke();
     }
 
-    private void OnValidate()
+    #region Initialization
+    private void Awake()
     {
-        for(int i = 0; i < internalProperties.Count; i++)
-        {
-            if (!existingProperties.Contains(internalProperties[i]))
-            {
-                //internalProperties[i] = Instantiate(internalProperties[i]); FIX
-                internalProperties[i].Host = this;
-                existingProperties.Add(internalProperties[i]);
-            }
-        }
+        // Create shallow copies of contained memories to break any reference links
+        InitializeProperties();
+        InitializeMemories();
     }
 
     private void InitializeProperties()
     {
-        /*for (int i = 0; i < internalProperties.Count; i++)
+        foreach (InternalData data in internalProperties)
         {
-            eventMemory.Add(new InternalMemory(internalProperties[i], -1));
-            internalProperties[i].Initialize();
-        }*/
-    }
-
-    private void InitializeMemories()
-    {
-        foreach (Memory e in ingrainedMemories)
-        {
-            Memory copy = e.Clone() as Memory;//Instantiate(e); FIX
-            if (copy is IHostActor) (copy as IHostActor).Host = this;
+            InternalData copy = data.Clone<InternalData>(false);
+            copy.Host = this;
             eventMemory.Add(new InternalMemory(copy, -1));
             copy.Initialize();
         }
     }
 
+    private void InitializeMemories()
+    {
+        foreach (Memory memory in ingrainedMemories)
+        {
+            Memory copy = memory.Clone<Memory>(false);
+            if (copy is IHostActor) (copy as IHostActor).Host = this;
+            eventMemory.Add(new InternalMemory(copy, -1));
+            copy.Initialize();
+        }
+    }
+    #endregion
+
     #region Memory
-    [SerializeField, ReadOnly, TableList]
+    [SerializeReference, ReadOnly, TableList]
     private List<InternalMemory> eventMemory = new List<InternalMemory>();
 
     [System.Serializable]
     public class InternalMemory
     {
-        [TableColumnWidth(20)]
+        [TableColumnWidth(20), HideInInspector]
         public int memoryIntensity;
-        [InlineEditor]
+        [ShowInInspector]
         public Memory memory;
 
         public InternalMemory(Memory memory, int memoryIntensity)
@@ -105,7 +95,7 @@ public class Actor : MonoBehaviour
         {
             if (typeof(T) == memory.memory.GetType())
             {
-                if (memory.memoryIntensity > 0 && --memory.memoryIntensity == 0) eventMemory.Remove(memory);
+                //if (memory.memoryIntensity > 0 && --memory.memoryIntensity == 0) eventMemory.Remove(memory);
                 return memory.memory as T;
             }
         }
@@ -119,11 +109,26 @@ public class Actor : MonoBehaviour
         {
             if (e.Equals(memory.memory))
             {
-                if (memory.memoryIntensity > 0 && --memory.memoryIntensity == 0) eventMemory.Remove(memory);
+                //if (memory.memoryIntensity > 0 && --memory.memoryIntensity == 0) eventMemory.Remove(memory);
                 return memory.memory as T;
             }
         }
         return null;
+    }
+
+    public bool TryFetchMemory<T>(out T e) where T : Memory
+    {
+        foreach (InternalMemory memory in eventMemory)
+        {
+            if (typeof(T) == memory.memory.GetType())
+            {
+                //if (memory.memoryIntensity > 0 && --memory.memoryIntensity == 0) eventMemory.Remove(memory);
+                e = memory.memory as T;
+                return true;
+            }
+        }
+        e = null;
+        return false;
     }
 
     public void ClearMemory()

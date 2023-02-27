@@ -10,66 +10,37 @@ using UnityEngine;
 public class Event : Memory
 {
     #region Static
-    private static Dictionary<Event, List<System.Action<Event>>> _listeners = new Dictionary<Event, List<System.Action<Event>>>();
+    private static Dictionary<Type, List<System.Action<Event>>> _listeners = new Dictionary<Type, List<System.Action<Event>>>();
     public static void SubscribeToEvent(Event e, System.Action<Event> action)
     {
-        if (!_listeners.ContainsKey(e.Original)) _listeners.Add(e.Original, new List<System.Action<Event>>());
-        _listeners[e.Original].Add(action);
+        Type t = e.GetType();
+        if (!_listeners.ContainsKey(t)) _listeners.Add(t, new List<System.Action<Event>>());
+        _listeners[t].Add(action);
     }
 
     public static void UnsubscribeFromEvent(Event e, System.Action<Event> action)
     {
-        if (!_listeners.ContainsKey(e.Original)) return;
-        _listeners[e.Original].Remove(action);
-        if (_listeners[e.Original].Count == 0) _listeners.Remove(e.Original);
+        Type t = e.GetType();
+        if (!_listeners.ContainsKey(t)) return;
+        _listeners[t].Remove(action);
+        if (_listeners[t].Count == 0) _listeners.Remove(t);
     }
     #endregion
-
-    [SerializeField, HideInInspector]
-    private Event _original;
-    public Event Original
-    {
-        get
-        {
-            if (_original == null) return this;
-            else return _original;
-        }
-    }
-    public bool IsOriginal => _original == null;
 
     /// <summary>
     /// Instance and propagate the event immediately.
     /// </summary>
     public void Trigger()
     {
-        Instance<Event>().Propagate();
-    }
-
-    /// <summary>
-    /// Creates an instance copy of this event scriptable object. If it is already an instance, returns this.
-    /// </summary>
-    /// <returns>Instance of the event</returns>
-    public T Instance<T>() where T : Event
-    {
-        if (Original != null) return this as T;
-        T copy = InstanceNoInit<T>();
-        copy.Initialize();
-        return copy;
-    }
-
-    protected T InstanceNoInit<T>() where T : Event
-    {
-        T copy = Clone() as T;
-        copy._original = this;
-        return copy;
+        Clone<Event>().Propagate();
     }
 
     public void Propagate()
     {
-        //Debug.Log($"{name} has listeners? {_listeners.ContainsKey(Original)}");
+        Debug.Log($"{GetType()} has listeners? {_listeners.ContainsKey(GetType())}");
         HashSet<System.Action<Event>> completed = new HashSet<System.Action<Event>>();
-        if (_listeners.ContainsKey(Original))
-            foreach (System.Action<Event> a in _listeners[Original])
+        if (_listeners.ContainsKey(GetType()))
+            foreach (System.Action<Event> a in _listeners[GetType()])
             {
                 completed.Add(a);
                 a.Invoke(this);
@@ -83,8 +54,8 @@ public class Event : Memory
 
     private void Propagate(Event self, HashSet<System.Action<Event>> completed)
     {
-        if (_listeners.ContainsKey(Original))
-            foreach (System.Action<Event> a in _listeners[Original])
+        if (_listeners.ContainsKey(GetType()))
+            foreach (System.Action<Event> a in _listeners[GetType()])
             {
                 if (completed.Contains(a)) continue;
                 completed.Add(a);
@@ -96,15 +67,4 @@ public class Event : Memory
             e.Propagate(self, completed);
         }
     }
-
-    /*public override bool Equals(object other)
-    {
-        if (other == null || other is not Event) return false;
-        return Original == (other as Event).Original;
-    }
-
-    public override int GetHashCode()
-    {
-        return base.GetHashCode();
-    }*/
 }

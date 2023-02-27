@@ -6,18 +6,16 @@ using UnityEngine;
 public class MoveState : LocomotionState
 {
     [SerializeField, FoldoutGroup("State")]
-    private InternalEvent target;
+    private Target target;
     [SerializeField, FoldoutGroup("State")]
     private float movementSpeed;
     public override bool IsValid()
     {
-        target = Host.FetchMemory(target).IfNull(target);
-        return target != null && !target.IsOriginal;
+        return Host.TryFetchMemory(out target);
     }
 
-    protected override void OnFixedUpdate()
+    protected override void FixedUpdate()
     {
-        Debug.Log("Moving");
         Vector3 dir = (target.Host.transform.position - Host.transform.position).normalized;
         Host.transform.position += dir * movementSpeed * Time.fixedDeltaTime;
     }

@@ -16,20 +16,12 @@ public class State : Action
     protected int tickDuration;
     [SerializeField, FoldoutGroup("State")]
     protected bool looping;
-    [SerializeField, FoldoutGroup("State")]
+    [SerializeReference, AcceptDefaultMemorySO, FoldoutGroup("State")]
     protected State exitState;
-    [System.NonSerialized, Sirenix.Serialization.OdinSerialize, FoldoutGroup("State")]
+    [SerializeReference, AcceptDefaultMemorySO, FoldoutGroup("State")]
     protected List<State> simultaniousStateFunctionality;
     [ShowInInspector, ReadOnly, FoldoutGroup("State")]
     private int tick;
-    public T Instance<T>(Actor host, StateMachine sm) where T : State
-    {
-        if (!IsOriginal) return this as T;
-        State copy = Instance<State>(host);
-        copy.stateMachine = sm;
-        copy.Initialize();
-        return copy as T;
-    }
 
     public sealed override void Initialize() { }
     public sealed override void Deinitialize() { }
@@ -43,20 +35,29 @@ public class State : Action
     {
         OnExit();
     }
-    protected virtual void OnExit() 
-    {
-        
-    }
+    protected virtual void OnExit() { }
 
     public sealed override void Logic()
     {
-        if (!IsValid()) return;
-        OnFixedUpdate();
+        if (IsValid())
+        {
+            FixedUpdate();
+        }
+        
         if(tick++ >= tickDuration && !looping)
         {
             stateMachine.SetState(exitState);
         }
     }
 
-    protected virtual void OnFixedUpdate() { }
+    protected virtual void FixedUpdate() { }
+
+    public T Clone<T>(Actor host, StateMachine sm) where T : State
+    {
+        T copy = Clone<T>(false);
+        copy.Host = host;
+        copy.stateMachine = sm;
+        copy.Initialize();
+        return copy;
+    }
 }

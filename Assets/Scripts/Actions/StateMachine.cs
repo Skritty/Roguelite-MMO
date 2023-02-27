@@ -4,17 +4,16 @@ using UnityEngine;
 using System.Linq;
 using Sirenix.OdinInspector;
 
-[System.Serializable]
 public class StateMachine : InternalData
 {
-    [ShowInInspector, Tooltip("The first state in this list will be the initial state")]
+    [SerializeReference, AcceptDefaultMemorySO, Tooltip("The first state in this list will be the initial state")]
     private List<State> possibleStates = new List<State>();
-    [ShowInInspector, ReadOnly]
+    [SerializeReference, ShowInInspector, ReadOnly]
     private State currentState;
 
     public override void Initialize()
     {
-        possibleStates = possibleStates.Select(s => s.Instance<State>(Host, this)).ToList();
+        possibleStates = possibleStates.Select(s => s.Clone<State>(Host, this)).ToList();
         Host.StartCoroutine(Delay());
         IEnumerator Delay()
         {
@@ -65,7 +64,8 @@ public class StateMachine : InternalData
     private void ChangeState(State state)
     {
         currentState?.Exit();
-        currentState = state.Instance<State>(Host);
+        currentState = state;
+        Debug.Log(currentState);
         currentState?.Enter();
         currentState?.Propagate();
     }

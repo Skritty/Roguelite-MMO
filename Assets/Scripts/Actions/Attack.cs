@@ -4,25 +4,24 @@ using UnityEngine;
 
 public class Attack : Action
 {
-    [SerializeField]
+    [SerializeReference]
     private Hit hit;
     [SerializeField]
     private float attackRange;
-    public bool clearTarget = true;
+    [SerializeField]
+    private bool clearTarget = true;
 
-    private InternalEvent target;
+    private Target target;
 
     public override bool IsValid()
     {
-        target = Host.FetchMemory(target).IfNull(target);
-        Debug.Log(Vector3.Distance(Host.transform.position, target.Host.transform.position));
-        return target != null && !target.IsOriginal && Vector3.Distance(Host.transform.position, target.Host.transform.position) <= attackRange;
+        return Host.TryFetchMemory(out target) && Vector3.Distance(Host.transform.position, target.Host.transform.position) <= attackRange;
     }
 
     public override void Logic()
     {
         Debug.Log("Target "+target.Host);
-        hit.Trigger(target.Host);
+        hit.Trigger();
         //if (clearTarget) Host.RemoveMemory(target);
     }
 }

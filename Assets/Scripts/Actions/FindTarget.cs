@@ -29,7 +29,9 @@ public class FindTarget : Action
             }
         }
         
-        InternalEvent target = this.target.Instance<InternalEvent>(t);
+        Target target = new Target();
+        target.Host = Host;
+        target.target = t;
         Host.AddMemory(target);
     }
 }

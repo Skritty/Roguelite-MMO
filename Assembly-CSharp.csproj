@@ -63,7 +63,6 @@
     <Compile Include="Assets\Scripts\Events\Event.cs" />
     <Compile Include="Assets\Scripts\Extensions.cs" />
     <Compile Include="Assets\Scripts\Actor.cs" />
-    <Compile Include="Assets\Scripts\Events\States\LocomotionState.cs" />
     <Compile Include="Assets\Scripts\Actions\HealthAdjustment.cs" />
     <Compile Include="Assets\Scripts\Memory.cs" />
     <Compile Include="Assets\Scripts\DefaultMemorySO.cs" />
@@ -80,6 +79,7 @@
     <Compile Include="Assets\Scripts\Actions\FindTarget.cs" />
     <Compile Include="Assets\Scripts\Events\States\MoveState.cs" />
     <Compile Include="Assets\Scripts\AcceptDefaultMemorySOAttribute.cs" />
+    <Compile Include="Assets\Scripts\Events\States\States.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

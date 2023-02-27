@@ -15,6 +15,7 @@ public abstract class Reaction<T> : Action where T : Event
 
     public override void Initialize()
     {
+        Debug.Log(trigger);
         Subscribe(trigger);
     }
 
@@ -30,7 +31,7 @@ public abstract class Reaction<T> : Action where T : Event
     public void Subscribe(T e)
     {
         if (e == null) return;
-        SubscribeToEvent(e.Original, Handle);
+        SubscribeToEvent(e, Handle);
     }
 
     /// <summary>
@@ -40,7 +41,7 @@ public abstract class Reaction<T> : Action where T : Event
     public void Unsubscribe(T e)
     {
         if (e == null) return;
-        UnsubscribeFromEvent(e.Original, Handle);
+        UnsubscribeFromEvent(e, Handle);
     }
 
     /// <summary>
@@ -50,7 +51,6 @@ public abstract class Reaction<T> : Action where T : Event
     /// <param name="cause">The cause of this Action</param>
     private void Handle(Event cause)
     {
-        if (cause is not T || (trigger != null && !trigger.Equals(cause))) return;
         trigger = cause as T;
         if (!IsValid()) return;
         Logic();

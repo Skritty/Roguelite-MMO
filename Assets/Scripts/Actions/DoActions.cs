@@ -12,8 +12,7 @@ public class DoActions : Reaction<InternalEvent>
     public override void Initialize()
     {
         base.Initialize();
-        Debug.Log(Host);
-        actions = actions.Select(a => a.Instance<Action>(Host)).ToList();
+        actions = actions.Select(a => a.Clone<Action>(Host)).ToList();
     }
 
     public override void Logic()

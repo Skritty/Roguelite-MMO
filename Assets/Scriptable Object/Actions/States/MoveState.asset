@@ -12,9 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0a4db7c4ff6e244eb2394502c9ba39e, type: 3}
   m_Name: MoveState
   m_EditorClassIdentifier: 
-  OnUpdate:
-    m_PersistentCalls:
-      m_Calls: []
   Memory:
     rid: 3253214766683652188
   references:
@@ -25,6 +22,19 @@ MonoBehaviour:
       data:
         animationName: Move
         animationTransitionTime: 0
-        tickDuration: 0
+        tickDuration: 60
         looping: 0
+        exitState:
+          rid: 6422047915378475155
+        simultaniousStateFunctionality: []
         movementSpeed: 1
+    - rid: 6422047915378475155
+      type: {class: IdleState, ns: , asm: Assembly-CSharp}
+      data:
+        animationName: Idle
+        animationTransitionTime: 0
+        tickDuration: 60
+        looping: 0
+        exitState:
+          rid: 3253214766683652188
+        simultaniousStateFunctionality: []

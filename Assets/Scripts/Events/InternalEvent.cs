@@ -10,7 +10,6 @@ using System.Linq;
 [Serializable]
 public class InternalEvent : Event, IHostActor
 {
-    [NonSerialized, Sirenix.Serialization.OdinSerialize]
     private Actor _host;
     [ShowInInspector, ReadOnly, PropertyOrder(-99), FoldoutGroup("Core")]
     public virtual Actor Host
@@ -25,24 +24,9 @@ public class InternalEvent : Event, IHostActor
         }
     }
 
-    /// <summary>
-    /// Instance and propagate the event immediately while setting a host.
-    /// </summary>
-    public void Trigger(Actor host)
+    public T Clone<T>(Actor host) where T : InternalEvent
     {
-        Instance<InternalEvent>(host).Propagate();
-    }
-
-    /// <summary>
-    /// Initializes the instance after setting the host.
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="host"></param>
-    /// <returns></returns>
-    public virtual T Instance<T>(Actor host) where T : InternalEvent
-    {
-        if (!IsOriginal) return this as T;
-        T copy = InstanceNoInit<T>();
+        T copy = Clone<T>(false);
         copy.Host = host;
         copy.Initialize();
         return copy;

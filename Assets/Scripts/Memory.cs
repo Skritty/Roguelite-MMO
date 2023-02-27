@@ -14,48 +14,10 @@ public abstract class Memory : ISerializationCallbackReceiver, ICloneable
 {
     public static IEnumerable<T> GetAssignableInstanceEnumerable<T>() where T : Memory => typeof(T).Assembly.GetTypes().Where(type => !type.IsAbstract && (type == typeof(T) || type.IsSubclassOf(typeof(T)))).Select(type => (T)Activator.CreateInstance(type));
 
-    /*[HideInInspector]
-    private DefaultMemorySO _default;
-    [ShowInInspector, PropertyOrder(-104), FoldoutGroup("Core")]
-    private DefaultMemorySO SetDefault
-    {
-        set
-        {
-            if (value == null)
-            {
-                _default.OnUpdate.RemoveListener(UpdateValuesToDefault);
-                _default = null;
-                return;
-            }
-            if(value.Memory == null)
-            {
-                Debug.LogWarning("Default Memory type is not set!");
-                return;
-            }
-            if(!GetType().IsAssignableFrom(value.Memory.GetType()))
-            {
-                Debug.LogWarning($"Default Memory type {value.Memory.GetType()} does not match type {GetType()}!");
-                return;
-            }
-            _default = value;
-            _default.OnUpdate.AddListener(UpdateValuesToDefault);
-            UpdateValuesToDefault();
-        }
-        get => _default;
-    }*/
-    /*private void UpdateValuesToDefault()
-    {
-        if (_default == null) return;
-        foreach (FieldInfo field in GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
-        {
-            field.SetValue(this, field.GetValue(_default.Memory));
-        }
-    }*/
-
     /// <summary>
     /// Pseudo-Inheritance where the memory can have multiple different origins.
     /// </summary>
-    [NonSerialized, OdinSerialize, ShowInInspector, HideReferenceObjectPicker, ValueDropdown("@Memory.GetAssignableInstanceEnumerable<Memory>()", HideChildProperties = true), PropertyOrder(-103), FoldoutGroup("Core")]
+    [SerializeReference, ShowInInspector, HideReferenceObjectPicker, ValueDropdown("@Memory.GetAssignableInstanceEnumerable<Memory>()", HideChildProperties = true), PropertyOrder(-103), FoldoutGroup("Core")]
     protected List<Memory> parentMemories = new List<Memory>();
 
     /// <summary>
@@ -65,7 +27,8 @@ public abstract class Memory : ISerializationCallbackReceiver, ICloneable
     /// <returns>Is the state a child of event e?</returns>
     public bool IsDerivativeOf(Memory memory)
     {
-        if (Equals(memory)) return true;
+        //if (Equals(memory)) return true;
+        if (GetType() == memory.GetType()) return true;
         if (parentMemories.Contains(memory)) return true;
         else
         {
@@ -83,8 +46,23 @@ public abstract class Memory : ISerializationCallbackReceiver, ICloneable
     public void OnAfterDeserialize() { }
     protected virtual void OnValidate() { }
 
-    public object Clone()
+    /// <summary>
+    /// Clones the memory and reinitializes the clone.
+    /// </summary>
+    public virtual object Clone()
     {
-        return MemberwiseClone();
+        Memory m = MemberwiseClone() as Memory;
+        m.Initialize();
+        return m;
+    }
+
+    /// <summary>
+    /// Clones the memory and reinitializes the clone.
+    /// </summary>
+    public virtual T Clone<T>(bool initialize = true) where T : Memory
+    {
+        Memory m = MemberwiseClone() as Memory;
+        if(initialize) m.Initialize();
+        return m as T;
     }
 }
